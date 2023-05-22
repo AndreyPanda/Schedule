@@ -1,3 +1,6 @@
 from django.db import models
 
-# Create your models here.
+class Specialization(models.Model):
+    title = models.CharField(max_length=255)
+    visit_duration = models.IntegerField(blank=False, default=1800)
+    is_used = models.BooleanField(default=True)
