@@ -26,9 +26,10 @@ def choice_of_specialization(request):
 
     return render(request, 'main/index.html', context)
 
-def choice_of_doctor(request):
+def choice_of_doctor(request, spec_id):
     context = {
-        'rows': rows,
+        'spec_id': spec_id,
+        'specialization': Specialization.objects.get(pk=spec_id).title
     }
 
     return render(request, 'main/doctors.html', context)
