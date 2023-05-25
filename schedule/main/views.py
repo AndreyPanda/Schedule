@@ -4,7 +4,7 @@ from django.http import HttpResponse
 
 
 def choice_of_specialization(request):
-    specialists = Specialization.objects.filter(is_used=True)
+    specialists = Specialization.objects.filter(is_used=True, doctors_specialization__isnull=False).distinct()
     button_count = len(specialists)
     buttons_per_row = 3
     rows = []
@@ -26,6 +26,7 @@ def choice_of_specialization(request):
     }
 
     return render(request, 'main/index.html', context)
+
 
 def choice_of_doctor(request, spec_id):
     doctors = Doctor.objects.filter(is_active=True, specialization=spec_id)
@@ -52,6 +53,7 @@ def choice_of_doctor(request, spec_id):
     }
 
     return render(request, 'main/doctors.html', context)
+
 
 def choice_of_time(request, doct_id):
     return HttpResponse(f"Здесь будет календарь для врача {Doctor.objects.get(pk=doct_id)}")
