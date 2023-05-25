@@ -18,11 +18,11 @@ class Doctor(models.Model):
     education = models.TextField(max_length=2000)
     description = models.TextField(max_length=5000, blank=True)
     birth_date = models.DateField(null=True, blank=True)
-    working_start_time = models.TimeField(blank=True)
-    working_finish_time = models.TimeField(blank=True)
+    working_start_time = models.TimeField(blank=True, default='08:00')
+    working_finish_time = models.TimeField(blank=True, default='17:00')
     is_active = models.BooleanField(default=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
-        return self.last_name
+        return self.last_name + ' ' + self.first_name + ' ' + self.fathers_name
 
