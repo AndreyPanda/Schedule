@@ -8,6 +8,7 @@ class SpecializationAdmin(admin.ModelAdmin):
     search_fields = ('title',)
     list_editable = ('is_used',)
     list_filter = ('is_used',)
+    prepopulated_fields = {'slug': ('title',)}
 
 
 class DoctorAdmin(admin.ModelAdmin):
@@ -15,6 +16,7 @@ class DoctorAdmin(admin.ModelAdmin):
     search_fields = ('last_name',)
     list_editable = ('is_active',)
     list_filter = ('is_active', 'specialization')
+    prepopulated_fields = {'slug': ('first_name', 'last_name', 'fathers_name')}
 
 
 class ClientAdmin(admin.ModelAdmin):

@@ -15,7 +15,7 @@
       <tr>
         {% for doctor in row %}
           <td><button>
-              <a href="{% url 'calendar' doctor.pk %}">{{ doctor }} </a>
+              <a href="{% url 'calendar' doctor.slug %}">{{ doctor }} </a>
           </button></td>
         {% endfor %}
       </tr>

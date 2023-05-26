@@ -3,6 +3,7 @@ from django.db import models
 
 class Specialization(models.Model):
     title = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, db_index=True, unique=True)
     visit_duration = models.IntegerField(blank=False, default=30)
     is_used = models.BooleanField(default=True)
 
@@ -14,6 +15,7 @@ class Doctor(models.Model):
     last_name = models.CharField(max_length=255)
     first_name = models.CharField(max_length=255)
     fathers_name = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, db_index=True, unique=True)
     specialization = models.ForeignKey(
         Specialization,
         related_name="doctors_specialization",

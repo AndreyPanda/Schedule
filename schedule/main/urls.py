@@ -4,6 +4,6 @@ from main.views import choice_of_specialization, choice_of_doctor, choice_of_tim
 
 urlpatterns = [
     path('', choice_of_specialization),
-    path('doctors/<int:spec_id>/', choice_of_doctor, name='doctors'),
-    path('calendar/<int:doct_id>/', choice_of_time, name='calendar'),
+    path('doctors/<slug:spec_slug>/', choice_of_doctor, name='doctors'),
+    path('calendar/<slug:doct_slug>/', choice_of_time, name='calendar'),
 ]

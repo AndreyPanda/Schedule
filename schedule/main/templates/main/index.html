@@ -14,7 +14,7 @@
     {% for row in rows %}
       <tr>
         {% for specialization in row %}
-          <td><button><a href="{% url 'doctors' specialization.pk %}">{{ specialization.title }} </a> </button></td>
+          <td><button><a href="{% url 'doctors' specialization.slug %}">{{ specialization.title }} </a> </button></td>
         {% endfor %}
       </tr>
     {% endfor %}
