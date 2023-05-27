@@ -9,6 +9,25 @@
 <body>
 <h1>Шаг 1 из 4: Выберите специализацию доктора</h1>
 
+<!--Скрипт на языке JS для генерации таблицы динамической ширины в зависимости от кол-ва специализаций в БД -->
+<script>
+    window.addEventListener('DOMContentLoaded', adjustTableWidth);
+
+    function adjustTableWidth() {
+        var table = document.querySelector('table');
+        var cellCount = table.getElementsByTagName('td').length;
+
+        if (cellCount === 1) {
+            table.style.width = '20%';
+        } else if (cellCount === 2) {
+            table.style.width = '40%';
+        } else if (cellCount === 3) {
+            table.style.width = '60%';
+        }
+    }
+</script>
+
+
 <table>
   <tbody>
     {% for row in rows %}
