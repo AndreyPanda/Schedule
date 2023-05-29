@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Выбор специализации</title>
+    <link type="text/css" href="{% static 'main/css/styles.css' %}" rel="stylesheet" />
+</head>
+<body>
+<h1>Шаг 3 из 4: Выберите время</h1>
+
+<table>
+  <tbody>
+    {% for row in rows %}
+      <tr>
+        {% for i in row %}
+          {% if ' - ' in i %}
+            <td><button><a href="{% url 'client_data' %}">{{ i }} </a> </button></td>
+          {% elif 'Недоступно' in i %}
+            <td><button class="booked_time">
+              {% for elem in i %}
+                {{ elem }} <br>
+              {% endfor %}
+            </button></td>
+          {% else %}
+            <td><button class="headers">
+              {% for elem in i %}
+                {{ elem }} <br>
+              {% endfor %}
+            </button></td>
+          {% endif %}
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+</body>
+</html>

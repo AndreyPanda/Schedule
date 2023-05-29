@@ -1,9 +1,10 @@
 from django.urls import  path
 
-from main.views import choice_of_specialization, choice_of_doctor, choice_of_time
+from main.views import choose_the_specialization, choose_the_doctor, choose_the_time, fill_in_the_client_data
 
 urlpatterns = [
-    path('', choice_of_specialization),
-    path('doctors/<slug:spec_slug>/', choice_of_doctor, name='doctors'),
-    path('calendar/<slug:doct_slug>/', choice_of_time, name='calendar'),
+    path('', choose_the_specialization),
+    path('doctors/<slug:spec_slug>/', choose_the_doctor, name='doctors'),
+    path('calendar/<slug:doct_slug>/', choose_the_time, name='calendar'),
+    path('client_data/', fill_in_the_client_data, name='client_data'),
 ]

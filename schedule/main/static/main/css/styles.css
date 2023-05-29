@@ -7,6 +7,8 @@ table {
     margin-bottom: 20px;
     margin-left: auto;
     margin-right: auto;
+    table-layout: fixed;
+    width: 80%;
 }
 
 td {
@@ -19,3 +21,14 @@ button {
     border-radius: 10px;
     background: lightcyan;
 }
+
+button.booked_time {
+    background: grey;
+}
+
+button.headers {
+    background: lightgreen;
+    font-size: 14px;
+    font-weight: bold;
+}
+
