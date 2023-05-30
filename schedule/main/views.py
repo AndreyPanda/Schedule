@@ -62,8 +62,24 @@ def choose_the_doctor(request, spec_slug):
     return render(request, 'main/doctors.html', context)
 
 
+class VisitDatetime:
+
+    def __init__(self, start_time, finish_time, visit_date):
+        self.start_time = start_time
+        self.finish_time = finish_time
+        self.visit_date = visit_date
+
+    def get_visit_datetime(self):
+        return datetime.combine(self.visit_date, self.start_time)
+
+    def __str__(self):
+        return f"{self.start_time.strftime('%H:%M')} - {self.finish_time.strftime('%H:%M')}"
+
+
 def choose_the_time(request, doct_slug):
     doctor = Doctor.objects.get(slug=doct_slug)
+    # Помещаем в данные сессии информацию о враче
+    request.session['doctor'] = doctor.id
     # Вводим здесь дату, так как к типу данных TimeField нельзя применить метод combine
     inner_needed_date = datetime(1900, 1, 1)
     start = datetime.combine(inner_needed_date, doctor.working_start_time)
@@ -118,12 +134,12 @@ def choose_the_time(request, doct_slug):
                 datetime_obj = datetime.combine(inner_needed_date, start)
                 if Visit.objects.filter(
                         Q(visit_datetime=datetime_obj) & Q(doctor_to_visit=doctor)).exists() or datetime_obj.time() in (
-                doctor.lunch_start_time, doctor_lunch_center_in_time):
+                        doctor.lunch_start_time, doctor_lunch_center_in_time):
                     row.append(['Недоступно', ])
                 else:
                     increased_datetime_obj = datetime_obj + timedelta(minutes=30)
                     increased_time = increased_datetime_obj.time()
-                    row.append(f"{start.strftime('%H:%M')} - {increased_time.strftime('%H:%M')}")
+                    row.append(VisitDatetime(start, increased_time, dates_of_week[button]))
             rows.append(row)
 
             inner_needed_date = datetime(1900, 1, 1)
@@ -140,4 +156,9 @@ def choose_the_time(request, doct_slug):
 
 
 def fill_in_the_client_data(request):
-    return render(request, 'main/client_data.html')
+    doctor = request.session.get('doctor')
+    context = {
+        'doctor': doctor,
+        'visit_datetime': request.GET.get('visit_datetime')
+    }
+    return render(request, 'main/client_data.html', context=context)
