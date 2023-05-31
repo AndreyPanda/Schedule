@@ -160,15 +160,20 @@ def fill_in_the_client_data(request):
     doctor_id = request.session.get('doctor')
     if request.method == 'POST':
         form = AddClient(request.POST)
+        visit_string = request.GET.get('visit_datetime')
+        visit_datetime = datetime(int(visit_string[:4]), int(visit_string[4:6]), int(visit_string[6:8]),
+                                  int(visit_string[8:10]), int(visit_string[10:]))
+        request.session['visit_datetime'] = visit_datetime.strftime('%d.%m.%Y, %H:%M')
         if form.is_valid():
-            new_client = form.save()
-            visit_string = request.GET.get('visit_datetime')
-            visit_datetime = datetime(int(visit_string[:4]), int(visit_string[4:6]), int(visit_string[6:8]),
-                                      int(visit_string[8:10]), int(visit_string[10:]))
-            new_visit = Visit(visit_datetime=visit_datetime, doctor_to_visit=Doctor.objects.get(pk=doctor_id),
-                              client_visiting=Client.objects.get(pk=new_client.id))
-            new_visit.save()
-            return redirect('specializations')
+            if not Visit.objects.filter(
+                    Q(visit_datetime=visit_datetime) & Q(doctor_to_visit=Doctor.objects.get(pk=doctor_id))):
+                new_client = form.save()
+                new_visit = Visit(visit_datetime=visit_datetime, doctor_to_visit=Doctor.objects.get(pk=doctor_id),
+                                  client_visiting=Client.objects.get(pk=new_client.id))
+                new_visit.save()
+                return redirect('booking_is_created')
+            else:
+                return redirect('booking_is_failed')
     else:
         form = AddClient
     context = {
@@ -177,3 +182,19 @@ def fill_in_the_client_data(request):
         'form': form,
     }
     return render(request, 'main/client_data.html', context=context)
+
+
+def booking_is_created(request):
+    context = {
+        'doctor': Doctor.objects.get(pk=request.session.get('doctor')),
+        'visit_datetime': request.session.get('visit_datetime'),
+    }
+    return render(request, 'main/booking_is_created.html', context=context)
+
+
+def booking_is_failed(request):
+    context = {
+        'doctor': Doctor.objects.get(pk=request.session.get('doctor')),
+        'visit_datetime': request.session.get('visit_datetime'),
+    }
+    return render(request, 'main/booking_is_failed.html', context=context)

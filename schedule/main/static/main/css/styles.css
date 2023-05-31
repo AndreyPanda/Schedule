@@ -2,6 +2,18 @@ h1 {
     text-align: center;
 }
 
+h1.booking_ok {
+    color: green;
+}
+
+h1.booking_nok {
+    color: red;
+}
+
+div {
+    text-align: center;
+}
+
 table {
     border-spacing: 5px;
     margin-bottom: 20px;

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Неудача при записи к доктору</title>
+    <link type="text/css" href="{% static 'main/css/styles.css' %}" rel="stylesheet" />
+</head>
+<body>
+<h1 class="booking_nok">Извините, не удалось создать запись к доктору {{ doctor }} на {{ visit_datetime }}</h1>
+<div>Возможно, это время уже занял другой клиент, либо произошла ошибка в нашей системе</div>
+<div>Вернитесь, пожалуйста, на главную страницу и попробуйте записаться еще раз</div>
+</body>
+</html>

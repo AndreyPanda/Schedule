@@ -55,4 +55,6 @@ class Visit(models.Model):
     client_visiting = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return self.visit_datetime.isoformat() + ' к врачу ' + self.doctor_to_visit.__repr__() + ' записан ' + self.client_visiting.__repr__()
+        return self.visit_datetime.isoformat() + \
+               ' к врачу ' + self.doctor_to_visit.__repr__() + \
+               ' записан ' + self.client_visiting.__repr__()
