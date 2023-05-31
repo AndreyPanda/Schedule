@@ -39,11 +39,11 @@ class Doctor(models.Model):
 
 
 class Client(models.Model):
-    last_name = models.CharField(max_length=255)
-    first_name = models.CharField(max_length=255)
-    fathers_name = models.CharField(max_length=255)
-    birth_date = models.DateField(null=True, blank=True)
-    phone = models.CharField(max_length=20, null=True, blank=True)
+    last_name = models.CharField(max_length=255, verbose_name='Фамилия')
+    first_name = models.CharField(max_length=255, verbose_name='Имя')
+    fathers_name = models.CharField(max_length=255, verbose_name='Отчество')
+    birth_date = models.DateField(null=True, blank=True, verbose_name='Дата рождения')
+    phone = models.CharField(max_length=20, null=True, blank=True, verbose_name='Телефон')
 
     def __str__(self):
         return self.last_name + ' ' + self.first_name + ' ' + self.fathers_name

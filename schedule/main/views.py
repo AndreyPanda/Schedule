@@ -3,9 +3,10 @@ import locale
 from datetime import timedelta, datetime
 
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
-from main.models import Specialization, Doctor, Visit
+from main.forms import AddClient
+from main.models import Specialization, Doctor, Visit, Client
 
 locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
 
@@ -70,7 +71,7 @@ class VisitDatetime:
         self.visit_date = visit_date
 
     def get_visit_datetime(self):
-        return datetime.combine(self.visit_date, self.start_time)
+        return datetime.combine(self.visit_date, self.start_time).strftime('%Y%m%d%H%M')
 
     def __str__(self):
         return f"{self.start_time.strftime('%H:%M')} - {self.finish_time.strftime('%H:%M')}"
@@ -156,9 +157,23 @@ def choose_the_time(request, doct_slug):
 
 
 def fill_in_the_client_data(request):
-    doctor = request.session.get('doctor')
+    doctor_id = request.session.get('doctor')
+    if request.method == 'POST':
+        form = AddClient(request.POST)
+        if form.is_valid():
+            new_client = form.save()
+            visit_string = request.GET.get('visit_datetime')
+            visit_datetime = datetime(int(visit_string[:4]), int(visit_string[4:6]), int(visit_string[6:8]),
+                                      int(visit_string[8:10]), int(visit_string[10:]))
+            new_visit = Visit(visit_datetime=visit_datetime, doctor_to_visit=Doctor.objects.get(pk=doctor_id),
+                              client_visiting=Client.objects.get(pk=new_client.id))
+            new_visit.save()
+            return redirect('specializations')
+    else:
+        form = AddClient
     context = {
-        'doctor': doctor,
-        'visit_datetime': request.GET.get('visit_datetime')
+        'doctor': doctor_id,
+        'visit_datetime': request.GET.get('visit_datetime'),
+        'form': form,
     }
     return render(request, 'main/client_data.html', context=context)

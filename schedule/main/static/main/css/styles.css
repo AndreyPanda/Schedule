@@ -32,3 +32,18 @@ button.headers {
     font-weight: bold;
 }
 
+button.book_the_time {
+    background: lightgreen;
+    font-size: 14px;
+    font-weight: bold;
+    width: 300px;
+    margin: 0 auto;
+    display: block;
+}
+
+form {
+    width: 300px;
+    margin: 0 auto;
+    margin-top: 30px;
+    text-align: right;
+}
