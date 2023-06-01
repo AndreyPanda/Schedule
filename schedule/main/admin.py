@@ -20,7 +20,7 @@ class DoctorAdmin(admin.ModelAdmin):
 
 
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ('last_name', 'first_name', 'fathers_name')
+    list_display = ('last_name', 'first_name', 'fathers_name', 'birth_date', 'phone')
     search_fields = ('last_name',)
 
 

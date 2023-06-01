@@ -1,17 +1,12 @@
-<!DOCTYPE html>
-{% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Введите данные о клиенте</title>
-    <link type="text/css" href="{% static 'main/css/styles.css' %}" rel="stylesheet" />
-</head>
-<body>
-<h1>Шаг 4 из 4: Заполните данные о клиенте</h1>
-    <form action="" method="post">
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+    <h2 class="text-center">Шаг 4 из 4: Заполните данные о клиенте</h2>
+    <form action="" method="post" class="form">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="book_the_time">Записаться на прием</button>
+        <button type="submit" class="btn btn-outline-primary btn-sm" style="margin-right: 18px">Записаться на прием</button>
     </form>
-</body>
-</html>
+
+{% endblock content %}

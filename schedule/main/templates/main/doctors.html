@@ -1,13 +1,7 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Выбор врача</title>
-    <link type="text/css" href="{% static 'main/css/styles.css' %}" rel="stylesheet" />
-</head>
-<body>
-<h1>Шаг 2 из 4: Выберите доктора</h1>
+{% extends 'main/base.html' %}
+
+{% block content %}
+<h2 class="text-center">Шаг 2 из 4: Выберите доктора</h2>
 
 <!--Скрипт на языке JS для генерации таблицы динамической ширины
 в зависимости от кол-ва врачей данной специализации в БД -->
@@ -29,20 +23,22 @@
 </script>
 
 
-<table>
+<table class="table table-my table-bordered">
   <tbody>
     {% for row in rows %}
       <tr>
         {% for doctor in row %}
-          <td><button>
-              <a href="{% url 'calendar' doctor.slug %}">{{ doctor }} </a>
-          </button></td>
+          <td>
+              <a href="{% url 'calendar' doctor.slug %}">
+                  <button type="button" class="btn btn-outline-primary">
+                      {{ doctor }}
+                  </button>
+              </a>
+          </td>
         {% endfor %}
       </tr>
     {% endfor %}
   </tbody>
 </table>
 
-
-</body>
-</html>
+{% endblock content %}

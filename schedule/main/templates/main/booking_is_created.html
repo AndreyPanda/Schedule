@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-{% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Подтверждение записи</title>
-    <link type="text/css" href="{% static 'main/css/styles.css' %}" rel="stylesheet" />
-</head>
-<body>
-<h1 class="booking_ok">Готово, Вы записаны к доктору {{ doctor }} на {{ visit_datetime }}</h1>
-</body>
-</html>
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<div style="color: green; font-size: 20px" class="text-center">Готово, Вы записаны к доктору {{ doctor }} на {{ visit_datetime }}</div>
+
+{% endblock content %}

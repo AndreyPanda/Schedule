@@ -1,61 +1,18 @@
-h1 {
-    text-align: center;
+.alert-my {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-bottom: 2px;
 }
 
-h1.booking_ok {
-    color: green;
-}
-
-h1.booking_nok {
-    color: red;
-}
-
-div {
-    text-align: center;
-}
-
-table {
-    border-spacing: 5px;
-    margin-bottom: 20px;
+.table-my {
     margin-left: auto;
     margin-right: auto;
-    table-layout: fixed;
-    width: 80%;
 }
 
-td {
-    width: 20%;
-}
-
-button {
-    width: 100%;
-    height: 60px;
-    border-radius: 10px;
-    background: lightcyan;
-}
-
-button.booked_time {
-    background: grey;
-}
-
-button.headers {
-    background: lightgreen;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-button.book_the_time {
-    background: lightgreen;
-    font-size: 14px;
-    font-weight: bold;
-    width: 300px;
-    margin: 0 auto;
-    display: block;
-}
-
-form {
-    width: 300px;
-    margin: 0 auto;
-    margin-top: 30px;
+.form {
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 30%;
     text-align: right;
 }

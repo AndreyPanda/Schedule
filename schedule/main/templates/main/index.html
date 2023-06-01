@@ -1,45 +1,44 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Выбор специализации</title>
-    <link type="text/css" href="{% static 'main/css/styles.css' %}" rel="stylesheet" />
-</head>
-<body>
-<h1>Шаг 1 из 4: Выберите специализацию доктора</h1>
+{% extends 'main/base.html' %}
 
-<!--Скрипт на языке JS для генерации таблицы динамической ширины в зависимости от кол-ва специализаций в БД -->
-<script>
-    window.addEventListener('DOMContentLoaded', adjustTableWidth);
+{% block content %}
 
-    function adjustTableWidth() {
-        var table = document.querySelector('table');
-        var cellCount = table.getElementsByTagName('td').length;
+    <h2 class="text-center"> Шаг 1 из 4: Выберите специализацию доктора</h2>
 
-        if (cellCount === 1) {
-            table.style.width = '20%';
-        } else if (cellCount === 2) {
-            table.style.width = '40%';
-        } else if (cellCount === 3) {
-            table.style.width = '60%';
+    <!--Скрипт на языке JS для генерации таблицы динамической ширины в зависимости от кол-ва специализаций в БД -->
+    <script>
+        window.addEventListener('DOMContentLoaded', adjustTableWidth);
+
+        function adjustTableWidth() {
+            var table = document.querySelector('table');
+            var cellCount = table.getElementsByTagName('td').length;
+
+            if (cellCount === 1) {
+                table.style.width = '20%';
+            } else if (cellCount === 2) {
+                table.style.width = '40%';
+            } else if (cellCount === 3) {
+                table.style.width = '60%';
+            }
         }
-    }
-</script>
+    </script>
 
 
-<table>
-  <tbody>
-    {% for row in rows %}
-      <tr>
-        {% for specialization in row %}
-          <td><button><a href="{% url 'doctors' specialization.slug %}">{{ specialization.title }} </a> </button></td>
+    <table class="table table-my table-bordered">
+        <tbody>
+        {% for row in rows %}
+            <tr>
+                {% for specialization in row %}
+                    <td class="text-center">
+                        <a href="{% url 'doctors' specialization.slug %}">
+                            <button type="button" class="btn btn-outline-primary">
+                                {{ specialization.title }}
+                            </button>
+                        </a>
+                    </td>
+                {% endfor %}
+            </tr>
         {% endfor %}
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
+        </tbody>
+    </table>
 
-
-</body>
-</html>
+{% endblock content %}
