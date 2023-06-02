@@ -29,7 +29,7 @@
             <tr>
                 {% for specialization in row %}
                     <td class="text-center">
-                        <a href="{% url 'doctors' specialization.slug %}">
+                        <a href="{% url 'doctors' %}?spec={{ specialization.slug }}">
                             <button type="button" class="btn btn-outline-primary">
                                 {{ specialization.title }}
                             </button>

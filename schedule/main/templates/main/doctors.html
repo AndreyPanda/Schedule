@@ -29,7 +29,7 @@
       <tr>
         {% for doctor in row %}
           <td>
-              <a href="{% url 'calendar' doctor.slug %}">
+              <a href="{% url 'calendar' %}?doctor_slug={{ doctor.slug }}">
                   <button type="button" class="btn btn-outline-primary">
                       {{ doctor }}
                   </button>
