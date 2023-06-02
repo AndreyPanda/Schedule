@@ -16,3 +16,13 @@
     width: 30%;
     text-align: right;
 }
+
+.booking_ok {
+    color: green;
+    font-size: 20px;
+}
+
+.booking_nok {
+    color: red;
+    font-size: 20px;
+}

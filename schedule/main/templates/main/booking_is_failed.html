@@ -2,10 +2,14 @@
 
 {% block content %}
 
-<div class="text-center" style="color: red; font-size: 20px">
+<div class="text-center booking_nok">
     Извините, не удалось создать запись к доктору {{ doctor }} на {{ visit_datetime }}
 </div>
-<div class="text-center">Возможно, это время уже занял другой клиент, либо произошла ошибка в нашей системе</div>
-<div class="text-center">Вернитесь, пожалуйста, на главную страницу и попробуйте записаться еще раз</div>
+<div class="text-center">
+    Возможно, это время уже занял другой клиент, либо произошла ошибка в нашей системе
+</div>
+<div class="text-center">
+    Вернитесь, пожалуйста, на главную страницу и попробуйте записаться еще раз
+</div>
 
 {% endblock content %}
