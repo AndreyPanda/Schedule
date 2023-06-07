@@ -37,6 +37,30 @@
             Админ-панель
         </a>
       </li>
+        {% if request.user.is_authenticated %}
+            <li class="nav-link text-white">
+                Пользователь: {{ user.username }}
+            </li>
+              <li>
+                <a href="{% url 'logout' %}" class="nav-link text-white">
+                  <i class="bi bi-box-arrow-in-left"></i>
+                    Выйти
+                </a>
+              </li>
+        {% else %}
+          <li>
+            <a href="{% url 'register' %}" class="nav-link text-white">
+              <i class="bi bi-database-add"></i>
+                Регистрация
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'login' %}" class="nav-link text-white">
+              <i class="bi bi-box-arrow-in-right"></i>
+                Войти
+            </a>
+          </li>
+        {% endif %}
     </ul>
     <hr>
 

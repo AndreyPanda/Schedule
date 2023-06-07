@@ -2,10 +2,13 @@ import calendar
 import locale
 from datetime import timedelta, datetime
 
+from django.contrib.auth import logout
+from django.contrib.auth.views import LoginView
 from django.db.models import Q
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 
-from main.forms import AddClient
+from main.forms import AddClient, LoginUserForm
 from main.models import Specialization, Doctor, Visit, Client
 from django.views.generic import TemplateView, CreateView
 from django.utils.http import urlencode
@@ -255,3 +258,22 @@ class BookingIsFailed(TemplateView):
             "visit_datetime": self.request.GET.get("visit_datetime"),
         }
         return context
+
+
+class Register(CreateView):
+    form_class = AddClient
+    template_name = "main/register.html"
+    success_url = reverse_lazy('login')
+
+
+class Login(LoginView):
+    form_class = LoginUserForm
+    template_name = 'main/login.html'
+
+    def get_success_url(self):
+        return reverse_lazy('specializations')
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('login')

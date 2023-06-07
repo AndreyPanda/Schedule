@@ -8,6 +8,9 @@ from main.views import (
     FillInTheClientData,
     BookingIsCreated,
     BookingIsFailed,
+    Register,
+    Login,
+    logout_user,
 )
 
 
@@ -19,4 +22,7 @@ urlpatterns = [
     path("client_data/", FillInTheClientData.as_view(), name="client_data"),
     path("booking_ok/", BookingIsCreated.as_view(), name="booking_is_created"),
     path("booking_nok/", BookingIsFailed.as_view(), name="booking_is_failed"),
+    path("register/", Register.as_view(), name="register"),
+    path("login/", Login.as_view(), name="login"),
+    path("logout/", logout_user, name="logout"),
 ]

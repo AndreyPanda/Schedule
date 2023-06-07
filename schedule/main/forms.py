@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
+
 from main.models import Client
 import re
 from django.core.exceptions import ValidationError
@@ -65,3 +67,9 @@ class AddClient(forms.ModelForm):
                 "Номер телефона может содержать только цифры и знаки + и -"
             )
         return phone
+
+
+class LoginUserForm(AuthenticationForm):
+    username = forms.CharField(label='Логин')
+    password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
+
