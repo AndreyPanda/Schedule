@@ -7,11 +7,11 @@ from django.contrib.auth.views import LoginView
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.utils.http import urlencode
+from django.views.generic import TemplateView, CreateView
 
 from main.forms import AddClient, LoginUserForm
 from main.models import Specialization, Doctor, Visit, Client
-from django.views.generic import TemplateView, CreateView
-from django.utils.http import urlencode
 
 locale.setlocale(locale.LC_ALL, "ru_RU.UTF-8")
 
@@ -167,10 +167,10 @@ class ChooseTheTime(TemplateView):
                     inner_needed_date = dates_of_week[button]
                     datetime_obj = datetime.combine(inner_needed_date, start)
                     if Visit.objects.filter(
-                        Q(visit_datetime=datetime_obj) & Q(doctor_to_visit=doctor)
+                            Q(visit_datetime=datetime_obj) & Q(doctor_to_visit=doctor)
                     ).exists() or datetime_obj.time() in (
-                        doctor.lunch_start_time,
-                        doctor_lunch_center_in_time,
+                            doctor.lunch_start_time,
+                            doctor_lunch_center_in_time,
                     ):
                         row.append(
                             [
@@ -214,28 +214,83 @@ class FillInTheClientData(CreateView):
         doctor_id = Doctor.objects.get(slug=self.request.GET.get("doctor")).id
 
         if form.is_valid():
-            if not Visit.objects.filter(
-                Q(visit_datetime=visit_datetime)
-                & Q(doctor_to_visit=Doctor.objects.get(pk=doctor_id))
-            ):
-                new_client = form.save()
-                new_visit = Visit(
-                    visit_datetime=visit_datetime,
-                    doctor_to_visit=Doctor.objects.get(pk=doctor_id),
-                    client_visiting=Client.objects.get(pk=new_client.id),
+            # Пробуем найти в БД клиента с такими ФИО, телефон, если нет - создаем нового по
+            # данным из формы, заполненной пользователем
+            try:
+                new_client = Client.objects.get(
+                    Q(first_name=form.cleaned_data['first_name'])
+                    & Q(last_name=form.cleaned_data['last_name'])
+                    & Q(fathers_name=form.cleaned_data['fathers_name'])
+                    & Q(phone=form.cleaned_data['phone'])
                 )
-                new_visit.save()
-                success_url = reverse_lazy("booking_is_created")
-                params = {"doctor": doctor_id, "visit_datetime": visit_datetime}
-                url = f"{success_url}?{urlencode(params)}"
-                self.success_url = url
+            except:
+                new_client = form.save()
+            # Проверяем не занят ли доктор в это время другим клиентом
+            # Иначе - перенаправление на booking_is_failed
+            if not Visit.objects.filter(
+                    Q(visit_datetime=visit_datetime)
+                    & Q(doctor_to_visit=Doctor.objects.get(pk=doctor_id))
+            ):
+                # Создаем список дат, на которые этот клиент уже записан к этому доктору
+                try:
+                    visits_of_this_client_to_this_doctor = Visit.objects.filter(
+                        Q(doctor_to_visit=Doctor.objects.get(pk=doctor_id))
+                        & Q(client_visiting=new_client)
+                    )
+                    dates_of_these_visits = [datetime.date(i.visit_datetime) for i in
+                                             visits_of_this_client_to_this_doctor]
+                except:
+                    dates_of_these_visits = []
+                print(f'---------------------------------------------dates_of_these_visits = {dates_of_these_visits}')
+                # Проверяем не записан ли этот клиент на эту дату к этому врачу
+                # Иначе - перенаправление на booking_is_failed
+                if not datetime.date(visit_datetime) in dates_of_these_visits:
+                    # Проверяем нет ли у этого клиента записей на это время (к другим врачам)
+                    # Иначе - перенаправление на booking_is_failed
+                    if not Visit.objects.filter(
+                            Q(client_visiting=new_client)
+                            & Q(visit_datetime=visit_datetime)
+                    ):
+                        new_visit = Visit(
+                            visit_datetime=visit_datetime,
+                            doctor_to_visit=Doctor.objects.get(pk=doctor_id),
+                            client_visiting=Client.objects.get(pk=new_client.id),
+                        )
+                        new_visit.save()
+                        success_url = reverse_lazy("booking_is_created")
+                        params = {"doctor": doctor_id, "visit_datetime": visit_datetime}
+                        url = f"{success_url}?{urlencode(params)}"
+                        self.success_url = url
+                    else:
+                        not_success_url = reverse_lazy("booking_is_failed")
+                        params = {
+                            "doctor": doctor_id,
+                            "visit_datetime": visit_datetime,
+                            "reason": 'youhavevisittoanotherdoctor',
+                        }
+                        url = f"{not_success_url}?{urlencode(params)}"
+                        self.success_url = url
+                else:
+                    not_success_url = reverse_lazy("booking_is_failed")
+                    params = {
+                        "doctor": doctor_id,
+                        "visit_datetime": visit_datetime,
+                        "reason": 'youalreadybookthisday',
+                    }
+                    url = f"{not_success_url}?{urlencode(params)}"
+                    self.success_url = url
             else:
                 not_success_url = reverse_lazy("booking_is_failed")
-                params = {"doctor": doctor_id, "visit_datetime": visit_datetime}
+                params = {
+                    "doctor": doctor_id,
+                    "visit_datetime": visit_datetime,
+                    "reason": 'doctorisbusy'
+                }
                 url = f"{not_success_url}?{urlencode(params)}"
                 self.success_url = url
+                new_client.delete()
 
-        return super().form_valid(form)
+        return redirect(self.success_url)
 
 
 class BookingIsCreated(TemplateView):
@@ -256,6 +311,7 @@ class BookingIsFailed(TemplateView):
         context = {
             "doctor": Doctor.objects.get(pk=self.request.GET.get("doctor")),
             "visit_datetime": self.request.GET.get("visit_datetime"),
+            "reason": self.request.GET.get("reason"),
         }
         return context
 
