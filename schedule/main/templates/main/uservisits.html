@@ -1,0 +1,32 @@
+{% extends 'main/base.html' %}
+{% load user_tags %}
+
+{% block content %}
+
+    <h2 class="text-center">Список моих записей</h2> <br>
+
+    <table class="table table-bordered">
+        <tbody>
+        {% for row in my_visits_data %}
+            <tr>
+                {% for i in row %}
+                    {% if i|is_not_string %}
+                        <td>
+                            <div class="alert alert-my alert-secondary text-center" role="alert">
+                                {{ i }}
+                            </div>
+                        </td>
+                    {% else %}
+                        <td>
+                            <div class="alert alert-my alert-secondary text-center" role="alert">
+                                <b>{{ i }}</b>
+                            </div>
+                        </td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock content %}

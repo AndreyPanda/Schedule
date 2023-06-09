@@ -21,7 +21,7 @@ def is_correct_birth_date(text):
 
 
 def is_correct_phone_number(phone_number):
-    pattern = re.compile(r"^[\d+-]{1,14}$")
+    pattern = re.compile(r"^[\d+-]{1,18}$")
     return bool(pattern.match(phone_number))
 
 
@@ -72,7 +72,7 @@ class AddClient(forms.ModelForm):
 class RegisterUserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ["email", "first_name", "phone"]
+        fields = ["email", "password", "first_name", "phone"]
 
     def clean_first_name(self):
         first_name = self.cleaned_data["first_name"]

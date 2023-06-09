@@ -336,3 +336,35 @@ class Login(LoginView):
 def logout_user(request):
     logout(request)
     return redirect("login")
+
+
+class UserVisits(TemplateView):
+    template_name = "main/uservisits.html"
+
+    def get_context_data(self, **kwargs):
+        my_visits_data = [
+            ["Специализация", "Доктор", "Дата и время", "Клиент"],
+        ]
+        try:
+            my_visits = [
+                i
+                for i in Visit.objects.filter(
+                    Q(client_visiting__phone=self.request.user.phone)
+                    & Q(visit_datetime__gte=datetime.now())
+                ).order_by("visit_datetime")
+            ]
+            for i in my_visits:
+                my_visits_data.append(
+                    [
+                        i.doctor_to_visit.specialization,
+                        i.doctor_to_visit,
+                        i.visit_datetime,
+                        i.client_visiting,
+                    ]
+                )
+        except:
+            pass
+        context = {
+            "my_visits_data": my_visits_data,
+        }
+        return context

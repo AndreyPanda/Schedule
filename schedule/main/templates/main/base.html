@@ -47,6 +47,12 @@
                     Выйти
                 </a>
               </li>
+              <li>
+                <a href="{% url 'uservisits' %}" class="nav-link text-white">
+                  <i class="bi bi-watch"></i>
+                    Мои записи к врачам
+                </a>
+              </li>
         {% else %}
           <li>
             <a href="{% url 'register' %}" class="nav-link text-white">

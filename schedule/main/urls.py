@@ -11,6 +11,7 @@ from main.views import (
     Register,
     Login,
     logout_user,
+    UserVisits,
 )
 
 
@@ -25,4 +26,5 @@ urlpatterns = [
     path("register/", Register.as_view(), name="register"),
     path("login/", Login.as_view(), name="login"),
     path("logout/", logout_user, name="logout"),
+    path("uservisits/", UserVisits.as_view(), name="uservisits"),
 ]
