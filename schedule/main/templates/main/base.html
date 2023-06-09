@@ -39,7 +39,7 @@
       </li>
         {% if request.user.is_authenticated %}
             <li class="nav-link text-white">
-                Пользователь: {{ user.username }}
+                Пользователь: {{ user.first_name }}
             </li>
               <li>
                 <a href="{% url 'logout' %}" class="nav-link text-white">

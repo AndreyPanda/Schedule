@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 
-from main.models import Client
+from main.models import Client, User
 import re
 from django.core.exceptions import ValidationError
 from datetime import datetime
@@ -69,7 +69,25 @@ class AddClient(forms.ModelForm):
         return phone
 
 
-class LoginUserForm(AuthenticationForm):
-    username = forms.CharField(label='Логин')
-    password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
+class RegisterUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["email", "first_name", "phone"]
 
+    def clean_first_name(self):
+        first_name = self.cleaned_data["first_name"]
+        if not contains_only_cyrillic(first_name):
+            raise ValidationError("Имя может содержать только кириллицу и знак дефиса")
+        return first_name
+
+    def clean_phone(self):
+        phone = self.cleaned_data["phone"]
+        if not is_correct_phone_number(phone):
+            raise ValidationError(
+                "Номер телефона может содержать только цифры и знаки + и -"
+            )
+        return phone
+
+
+class LoginUserForm(AuthenticationForm):
+    password = forms.CharField(label="Пароль", widget=forms.PasswordInput)

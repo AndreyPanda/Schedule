@@ -10,7 +10,7 @@ from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django.views.generic import TemplateView, CreateView
 
-from main.forms import AddClient, LoginUserForm
+from main.forms import AddClient, LoginUserForm, RegisterUserForm
 from main.models import Specialization, Doctor, Visit, Client
 
 locale.setlocale(locale.LC_ALL, "ru_RU.UTF-8")
@@ -167,10 +167,10 @@ class ChooseTheTime(TemplateView):
                     inner_needed_date = dates_of_week[button]
                     datetime_obj = datetime.combine(inner_needed_date, start)
                     if Visit.objects.filter(
-                            Q(visit_datetime=datetime_obj) & Q(doctor_to_visit=doctor)
+                        Q(visit_datetime=datetime_obj) & Q(doctor_to_visit=doctor)
                     ).exists() or datetime_obj.time() in (
-                            doctor.lunch_start_time,
-                            doctor_lunch_center_in_time,
+                        doctor.lunch_start_time,
+                        doctor_lunch_center_in_time,
                     ):
                         row.append(
                             [
@@ -218,18 +218,18 @@ class FillInTheClientData(CreateView):
             # данным из формы, заполненной пользователем
             try:
                 new_client = Client.objects.get(
-                    Q(first_name=form.cleaned_data['first_name'])
-                    & Q(last_name=form.cleaned_data['last_name'])
-                    & Q(fathers_name=form.cleaned_data['fathers_name'])
-                    & Q(phone=form.cleaned_data['phone'])
+                    Q(first_name=form.cleaned_data["first_name"])
+                    & Q(last_name=form.cleaned_data["last_name"])
+                    & Q(fathers_name=form.cleaned_data["fathers_name"])
+                    & Q(phone=form.cleaned_data["phone"])
                 )
             except:
                 new_client = form.save()
             # Проверяем не занят ли доктор в это время другим клиентом
             # Иначе - перенаправление на booking_is_failed
             if not Visit.objects.filter(
-                    Q(visit_datetime=visit_datetime)
-                    & Q(doctor_to_visit=Doctor.objects.get(pk=doctor_id))
+                Q(visit_datetime=visit_datetime)
+                & Q(doctor_to_visit=Doctor.objects.get(pk=doctor_id))
             ):
                 # Создаем список дат, на которые этот клиент уже записан к этому доктору
                 try:
@@ -237,19 +237,22 @@ class FillInTheClientData(CreateView):
                         Q(doctor_to_visit=Doctor.objects.get(pk=doctor_id))
                         & Q(client_visiting=new_client)
                     )
-                    dates_of_these_visits = [datetime.date(i.visit_datetime) for i in
-                                             visits_of_this_client_to_this_doctor]
+                    dates_of_these_visits = [
+                        datetime.date(i.visit_datetime)
+                        for i in visits_of_this_client_to_this_doctor
+                    ]
                 except:
                     dates_of_these_visits = []
-                print(f'---------------------------------------------dates_of_these_visits = {dates_of_these_visits}')
+                print(
+                    f"---------------------------------------------dates_of_these_visits = {dates_of_these_visits}"
+                )
                 # Проверяем не записан ли этот клиент на эту дату к этому врачу
                 # Иначе - перенаправление на booking_is_failed
                 if not datetime.date(visit_datetime) in dates_of_these_visits:
                     # Проверяем нет ли у этого клиента записей на это время (к другим врачам)
                     # Иначе - перенаправление на booking_is_failed
                     if not Visit.objects.filter(
-                            Q(client_visiting=new_client)
-                            & Q(visit_datetime=visit_datetime)
+                        Q(client_visiting=new_client) & Q(visit_datetime=visit_datetime)
                     ):
                         new_visit = Visit(
                             visit_datetime=visit_datetime,
@@ -266,7 +269,7 @@ class FillInTheClientData(CreateView):
                         params = {
                             "doctor": doctor_id,
                             "visit_datetime": visit_datetime,
-                            "reason": 'youhavevisittoanotherdoctor',
+                            "reason": "youhavevisittoanotherdoctor",
                         }
                         url = f"{not_success_url}?{urlencode(params)}"
                         self.success_url = url
@@ -275,7 +278,7 @@ class FillInTheClientData(CreateView):
                     params = {
                         "doctor": doctor_id,
                         "visit_datetime": visit_datetime,
-                        "reason": 'youalreadybookthisday',
+                        "reason": "youalreadybookthisday",
                     }
                     url = f"{not_success_url}?{urlencode(params)}"
                     self.success_url = url
@@ -284,7 +287,7 @@ class FillInTheClientData(CreateView):
                 params = {
                     "doctor": doctor_id,
                     "visit_datetime": visit_datetime,
-                    "reason": 'doctorisbusy'
+                    "reason": "doctorisbusy",
                 }
                 url = f"{not_success_url}?{urlencode(params)}"
                 self.success_url = url
@@ -317,19 +320,19 @@ class BookingIsFailed(TemplateView):
 
 
 class Register(CreateView):
-    form_class = AddClient
+    form_class = RegisterUserForm
     template_name = "main/register.html"
-    success_url = reverse_lazy('login')
+    success_url = reverse_lazy("login")
 
 
 class Login(LoginView):
     form_class = LoginUserForm
-    template_name = 'main/login.html'
+    template_name = "main/login.html"
 
     def get_success_url(self):
-        return reverse_lazy('specializations')
+        return reverse_lazy("specializations")
 
 
 def logout_user(request):
     logout(request)
-    return redirect('login')
+    return redirect("login")

@@ -1,6 +1,11 @@
 from django.contrib import admin
 
-from main.models import Specialization, Doctor, Client, Visit
+from main.models import Specialization, Doctor, Client, Visit, User
+
+
+class UserAdmin(admin.ModelAdmin):
+    list_display = ("email", "phone", "first_name")
+    search_fields = ("email", "phone")
 
 
 class SpecializationAdmin(admin.ModelAdmin):
@@ -44,3 +49,4 @@ admin.site.register(Specialization, SpecializationAdmin)
 admin.site.register(Doctor, DoctorAdmin)
 admin.site.register(Client, ClientAdmin)
 admin.site.register(Visit, VisitAdmin)
+admin.site.register(User, UserAdmin)
