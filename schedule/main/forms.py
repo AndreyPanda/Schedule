@@ -4,7 +4,6 @@ from django.contrib.auth.forms import AuthenticationForm
 from main.models import Client, User
 import re
 from django.core.exceptions import ValidationError
-from datetime import datetime
 
 
 def contains_only_cyrillic(text):
@@ -13,11 +12,10 @@ def contains_only_cyrillic(text):
 
 
 def is_correct_birth_date(text):
-    try:
-        datetime.strptime(str(text), "%Y-%m-%d")
+    pattern = re.compile(r"\d{4}-\d{2}-\d{2}")
+    if pattern.match(str(text)):
         return True
-    except ValueError:
-        return False
+    return False
 
 
 def is_correct_phone_number(phone_number):

@@ -90,7 +90,9 @@ class Client(models.Model):
     last_name = models.CharField(max_length=255, verbose_name="Фамилия")
     first_name = models.CharField(max_length=255, verbose_name="Имя")
     fathers_name = models.CharField(max_length=255, verbose_name="Отчество")
-    birth_date = models.DateField(verbose_name="Дата рождения", null=True)
+    birth_date = models.DateField(
+        verbose_name="Дата рождения в формате ГГГГ-ММ-ДД", null=True
+    )
     phone = models.CharField(max_length=20, verbose_name="Телефон", null=True)
 
     def __str__(self):
