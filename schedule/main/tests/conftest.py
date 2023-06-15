@@ -1,6 +1,6 @@
 import pytest
 from django.contrib.auth import get_user_model
-from main.models import Specialization, Doctor
+from main.models import Specialization, Doctor, Client
 
 
 @pytest.fixture
@@ -15,7 +15,7 @@ def user(django_user_model):
 # Фикстура для создания пары специализаций и пары докторов в тестовой БД
 # Заодно здесь же тестируем, что запись в БД доступна
 @pytest.fixture()
-def create_specs_and_doctors(user):
+def create_specs_and_doctors_and_clients(user):
     spec1 = Specialization.objects.create(title="Специализация 1", slug="spec1")
     spec1.full_clean()
     spec2 = Specialization.objects.create(title="Специализация 2", slug="spec2")
@@ -38,3 +38,21 @@ def create_specs_and_doctors(user):
         education="Киров, 1985",
     )
     doctor2.full_clean()
+
+    client1 = Client.objects.create(
+        last_name="Бахметьев>",
+        first_name="Андрей",
+        fathers_name="Витальевич",
+        birth_date="1985-05-05",
+        phone="+9-123-456-8998",
+    )
+    client1.full_clean()
+
+    client2 = Client.objects.create(
+        last_name="Майоров",
+        first_name="Ульян",
+        fathers_name="Олегович",
+        birth_date="1985-05-05",
+        phone="+7-906-456-2020",
+    )
+    client2.full_clean()

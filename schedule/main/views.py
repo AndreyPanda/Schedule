@@ -202,8 +202,13 @@ class FillInTheClientData(CreateView):
     form_class = AddClient
     template_name = "main/client_data.html"
 
+    def __init__(self, *args, doctor_slug=None, visit_string=None, **kwargs):
+        self.doctor_slug = doctor_slug
+        self.visit_string = visit_string
+        super().__init__(*args, **kwargs)
+
     def form_valid(self, form):
-        visit_string = self.request.GET.get("visit_datetime")
+        visit_string = self.visit_string or self.request.GET.get("visit_datetime")
         visit_datetime = datetime(
             int(visit_string[:4]),
             int(visit_string[4:6]),
@@ -211,7 +216,8 @@ class FillInTheClientData(CreateView):
             int(visit_string[8:10]),
             int(visit_string[10:]),
         )
-        doctor_id = Doctor.objects.get(slug=self.request.GET.get("doctor")).id
+        doctor_slug = self.doctor_slug or self.request.GET.get("doctor")
+        doctor_id = Doctor.objects.get(slug=doctor_slug).id
 
         if form.is_valid():
             # Пробуем найти в БД клиента с такими ФИО, телефон, если нет - создаем нового по
