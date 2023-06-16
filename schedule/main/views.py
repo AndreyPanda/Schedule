@@ -13,6 +13,10 @@ from django.views.generic import TemplateView, CreateView
 from main.forms import AddClient, LoginUserForm, RegisterUserForm
 from main.models import Specialization, Doctor, Visit, Client
 
+from django.shortcuts import render
+import dateparser
+
+
 locale.setlocale(locale.LC_ALL, "ru_RU.UTF-8")
 
 
@@ -361,12 +365,13 @@ class UserVisits(TemplateView):
             ]
             for i in my_visits:
                 my_visits_data.append(
-                    [
-                        i.doctor_to_visit.specialization,
-                        i.doctor_to_visit,
-                        i.visit_datetime,
-                        i.client_visiting,
-                    ]
+                    {
+                        "Специализация": i.doctor_to_visit.specialization,
+                        "Доктор": i.doctor_to_visit,
+                        "ДатаВремя": i.visit_datetime,
+                        "Клиент": i.client_visiting,
+                        "Действие": "Удалить",
+                    }
                 )
         except:
             pass
@@ -374,3 +379,30 @@ class UserVisits(TemplateView):
             "my_visits_data": my_visits_data,
         }
         return context
+
+
+class ConfirmDelete(TemplateView):
+    template_name = "main/confirm_delete.html"
+
+    def get_context_data(self, **kwargs):
+        context = {
+            "doctor": Doctor.objects.get(slug=self.request.GET.get("doctor")),
+            "visit_datetime": self.request.GET.get("visit_datetime"),
+        }
+        return context
+
+    def get(self, request):
+        return render(request, self.template_name, context=self.get_context_data())
+
+    def post(self, request):
+        delete_action = request.POST.get('delete')
+        if delete_action == 'yes':
+            visit = Visit.objects.get(
+                Q(doctor_to_visit=Doctor.objects.get(slug=self.request.GET.get("doctor")))
+                &Q(visit_datetime=dateparser.parse(self.request.GET.get("visit_datetime"), languages=['ru']))
+                )
+            visit.delete()
+            return redirect('uservisits')
+
+        if delete_action == 'no':
+            return redirect('uservisits')

@@ -12,6 +12,7 @@ from main.views import (
     Login,
     logout_user,
     UserVisits,
+    ConfirmDelete,
 )
 
 
@@ -27,4 +28,5 @@ urlpatterns = [
     path("login/", Login.as_view(), name="login"),
     path("logout/", logout_user, name="logout"),
     path("uservisits/", UserVisits.as_view(), name="uservisits"),
+    path("confirm_delete/", ConfirmDelete.as_view(), name="confirm_delete"),
 ]

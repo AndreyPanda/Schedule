@@ -11,3 +11,8 @@ def is_not_string(value):
 @register.filter
 def is_not_list(value):
     return type(value) != list
+
+
+@register.filter
+def is_not_dict(value):
+    return type(value) != dict

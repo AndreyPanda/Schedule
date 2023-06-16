@@ -1,0 +1,32 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<div class="text-center">
+    <h3>Вы действительно хотите удалить запись к доктору {{ doctor }} на {{ visit_datetime }} ?</h3>
+</div>
+
+<table class="table table-bordered">
+<tbody>
+    <p></p>
+    <form method="POST">
+    {% csrf_token %}
+    <td class="text-center">
+        <button type="button submit" name="delete" value="yes" class="btn btn-outline-danger">
+            Да, удалить и вернуться к моим записям
+        </button>
+    </td>
+    </form>
+
+    <td class="text-center">
+        <a href="{% url 'uservisits' %}">
+            <button type="button" class="btn btn-outline-primary">
+                Не удалять и вернуться к моим записям
+            </button>
+        </a>
+    </td>
+</tbody>
+</table>
+
+
+{% endblock content %}

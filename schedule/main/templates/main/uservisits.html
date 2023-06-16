@@ -9,22 +9,33 @@
         <tbody>
         {% for row in my_visits_data %}
             <tr>
+            {% if row|is_not_dict %}
                 {% for i in row %}
-                    {% if i|is_not_string %}
+                    <td>
+                        <div class="alert alert-my alert-secondary text-center" role="alert">
+                            <b>{{ i }}</b>
+                        </div>
+                    </td>
+                {% endfor %}
+            {% else %}
+                {% for k,v in row.items %}
+                    {% if v|is_not_string %}
                         <td>
                             <div class="alert alert-my alert-secondary text-center" role="alert">
-                                {{ i }}
+                                {{ v }}
                             </div>
                         </td>
                     {% else %}
-                        <td>
-                            <div class="alert alert-my alert-secondary text-center" role="alert">
-                                <b>{{ i }}</b>
-                            </div>
+                        <td class="text-center">
+                            <a href="{% url 'confirm_delete' %}?visit_datetime={{ row.ДатаВремя }}&doctor={{ row.Доктор.slug }}">
+                                <button type="button" class="btn btn-outline-danger">
+                                    {{ v }}
+                                </button>
+                            </a>
                         </td>
                     {% endif %}
                 {% endfor %}
-            </tr>
+            {% endif %}
         {% endfor %}
         </tbody>
     </table>
