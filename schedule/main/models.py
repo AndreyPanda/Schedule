@@ -86,7 +86,7 @@ class Doctor(models.Model):
         return self.last_name + " " + self.first_name + " " + self.fathers_name
 
 
-class Client(models.Model):
+class Customer(models.Model):
     last_name = models.CharField(max_length=255, verbose_name="Фамилия")
     first_name = models.CharField(max_length=255, verbose_name="Имя")
     fathers_name = models.CharField(max_length=255, verbose_name="Отчество")
@@ -102,7 +102,7 @@ class Client(models.Model):
 class Visit(models.Model):
     visit_datetime = models.DateTimeField()
     doctor_to_visit = models.ForeignKey(Doctor, on_delete=models.SET_NULL, null=True)
-    client_visiting = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True)
+    customer_visiting = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return (
@@ -110,5 +110,5 @@ class Visit(models.Model):
             + " к врачу "
             + self.doctor_to_visit.__repr__()
             + " записан "
-            + self.client_visiting.__repr__()
+            + self.customer_visiting.__repr__()
         )

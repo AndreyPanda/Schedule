@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 
-from main.models import Client, User
+from main.models import Customer, User
 import re
 from django.core.exceptions import ValidationError
 
@@ -23,9 +23,9 @@ def is_correct_phone_number(phone_number):
     return bool(pattern.match(phone_number))
 
 
-class AddClient(forms.ModelForm):
+class AddCustomer(forms.ModelForm):
     class Meta:
-        model = Client
+        model = Customer
         fields = ["last_name", "first_name", "fathers_name", "birth_date", "phone"]
 
     def clean_last_name(self):

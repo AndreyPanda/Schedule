@@ -10,8 +10,8 @@ from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django.views.generic import TemplateView, CreateView
 
-from main.forms import AddClient, LoginUserForm, RegisterUserForm
-from main.models import Specialization, Doctor, Visit, Client
+from main.forms import AddCustomer, LoginUserForm, RegisterUserForm
+from main.models import Specialization, Doctor, Visit, Customer
 
 from django.shortcuts import render
 import dateparser
@@ -202,9 +202,9 @@ class ChooseTheTime(TemplateView):
         return context
 
 
-class FillInTheClientData(CreateView):
-    form_class = AddClient
-    template_name = "main/client_data.html"
+class FillInTheCustomerData(CreateView):
+    form_class = AddCustomer
+    template_name = "main/customer_data.html"
 
     def __init__(self, *args, doctor_slug=None, visit_string=None, **kwargs):
         self.doctor_slug = doctor_slug
@@ -227,14 +227,14 @@ class FillInTheClientData(CreateView):
             # Пробуем найти в БД клиента с такими ФИО, телефон, если нет - создаем нового по
             # данным из формы, заполненной пользователем
             try:
-                new_client = Client.objects.get(
+                new_customer = Customer.objects.get(
                     Q(first_name=form.cleaned_data["first_name"])
                     & Q(last_name=form.cleaned_data["last_name"])
                     & Q(fathers_name=form.cleaned_data["fathers_name"])
                     & Q(phone=form.cleaned_data["phone"])
                 )
             except:
-                new_client = form.save()
+                new_customer = form.save()
             # Проверяем не занят ли доктор в это время другим клиентом
             # Иначе - перенаправление на booking_is_failed
             if not Visit.objects.filter(
@@ -243,13 +243,13 @@ class FillInTheClientData(CreateView):
             ):
                 # Создаем список дат, на которые этот клиент уже записан к этому доктору
                 try:
-                    visits_of_this_client_to_this_doctor = Visit.objects.filter(
+                    visits_of_this_customer_to_this_doctor = Visit.objects.filter(
                         Q(doctor_to_visit=Doctor.objects.get(pk=doctor_id))
-                        & Q(client_visiting=new_client)
+                        & Q(customer_visiting=new_customer)
                     )
                     dates_of_these_visits = [
                         datetime.date(i.visit_datetime)
-                        for i in visits_of_this_client_to_this_doctor
+                        for i in visits_of_this_customer_to_this_doctor
                     ]
                 except:
                     dates_of_these_visits = []
@@ -262,12 +262,12 @@ class FillInTheClientData(CreateView):
                     # Проверяем нет ли у этого клиента записей на это время (к другим врачам)
                     # Иначе - перенаправление на booking_is_failed
                     if not Visit.objects.filter(
-                        Q(client_visiting=new_client) & Q(visit_datetime=visit_datetime)
+                        Q(customer_visiting=new_customer) & Q(visit_datetime=visit_datetime)
                     ):
                         new_visit = Visit(
                             visit_datetime=visit_datetime,
                             doctor_to_visit=Doctor.objects.get(pk=doctor_id),
-                            client_visiting=Client.objects.get(pk=new_client.id),
+                            customer_visiting=Customer.objects.get(pk=new_customer.id),
                         )
                         new_visit.save()
                         success_url = reverse_lazy("booking_is_created")
@@ -301,7 +301,7 @@ class FillInTheClientData(CreateView):
                 }
                 url = f"{not_success_url}?{urlencode(params)}"
                 self.success_url = url
-                new_client.delete()
+                new_customer.delete()
 
         return redirect(self.success_url)
 
@@ -348,8 +348,8 @@ def logout_user(request):
     return redirect("login")
 
 
-class UserVisits(TemplateView):
-    template_name = "main/uservisits.html"
+class CustomerVisits(TemplateView):
+    template_name = "main/customervisits.html"
 
     def get_context_data(self, **kwargs):
         my_visits_data = [
@@ -359,7 +359,7 @@ class UserVisits(TemplateView):
             my_visits = [
                 i
                 for i in Visit.objects.filter(
-                    Q(client_visiting__phone=self.request.user.phone)
+                    Q(customer_visiting__phone=self.request.user.phone)
                     & Q(visit_datetime__gte=datetime.now())
                 ).order_by("visit_datetime")
             ]
@@ -369,7 +369,7 @@ class UserVisits(TemplateView):
                         "Специализация": i.doctor_to_visit.specialization,
                         "Доктор": i.doctor_to_visit,
                         "ДатаВремя": i.visit_datetime,
-                        "Клиент": i.client_visiting,
+                        "Клиент": i.customer_visiting,
                         "Действие": "Удалить",
                     }
                 )
@@ -395,14 +395,22 @@ class ConfirmDelete(TemplateView):
         return render(request, self.template_name, context=self.get_context_data())
 
     def post(self, request):
-        delete_action = request.POST.get('delete')
-        if delete_action == 'yes':
+        delete_action = request.POST.get("delete")
+        if delete_action == "yes":
             visit = Visit.objects.get(
-                Q(doctor_to_visit=Doctor.objects.get(slug=self.request.GET.get("doctor")))
-                &Q(visit_datetime=dateparser.parse(self.request.GET.get("visit_datetime"), languages=['ru']))
+                Q(
+                    doctor_to_visit=Doctor.objects.get(
+                        slug=self.request.GET.get("doctor")
+                    )
                 )
+                & Q(
+                    visit_datetime=dateparser.parse(
+                        self.request.GET.get("visit_datetime"), languages=["ru"]
+                    )
+                )
+            )
             visit.delete()
-            return redirect('uservisits')
+            return redirect("customervisits")
 
-        if delete_action == 'no':
-            return redirect('uservisits')
+        if delete_action == "no":
+            return redirect("customervisits")

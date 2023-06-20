@@ -1,11 +1,11 @@
 import pytest
 
-from main.forms import AddClient, RegisterUserForm
-from main.models import Client, User
+from main.forms import AddCustomer, RegisterUserForm
+from main.models import Customer, User
 
 
 @pytest.mark.django_db
-class TestAddClientForm:
+class TestAddCustomerForm:
     common_test_data = {
         "last_name": "Иванов-Храпунов",
         "first_name": "Антон",
@@ -16,16 +16,16 @@ class TestAddClientForm:
 
     def test_form_is_valid(self):
         test_data = self.common_test_data.copy()
-        form = AddClient(data=test_data)
+        form = AddCustomer(data=test_data)
         assert form.is_valid()
         form.save()
-        assert Client.objects.count() == 1
-        assert Client.objects.last().last_name == "Иванов-Храпунов"
+        assert Customer.objects.count() == 1
+        assert Customer.objects.last().last_name == "Иванов-Храпунов"
 
     def test_last_name_invalid(self):
         test_data = self.common_test_data.copy()
         test_data["last_name"] = "Ivanov"
-        form = AddClient(data=test_data)
+        form = AddCustomer(data=test_data)
         assert not form.is_valid()
         assert "last_name" in form.errors
         for i in self.common_test_data.keys():
@@ -35,7 +35,7 @@ class TestAddClientForm:
     def test_first_name_invalid(self):
         test_data = self.common_test_data.copy()
         test_data["first_name"] = "Anton"
-        form = AddClient(data=test_data)
+        form = AddCustomer(data=test_data)
         assert not form.is_valid()
         assert "first_name" in form.errors
         for i in self.common_test_data.keys():
@@ -45,7 +45,7 @@ class TestAddClientForm:
     def test_fathers_name_invalid(self):
         test_data = self.common_test_data.copy()
         test_data["fathers_name"] = "Рюрикович1"
-        form = AddClient(data=test_data)
+        form = AddCustomer(data=test_data)
         assert not form.is_valid()
         assert "fathers_name" in form.errors
         for i in self.common_test_data.keys():
@@ -55,7 +55,7 @@ class TestAddClientForm:
     def test_birth_date_invalid_format(self):
         test_data = self.common_test_data.copy()
         test_data["birth_date"] = "12-12-1956"
-        form = AddClient(data=test_data)
+        form = AddCustomer(data=test_data)
         assert not form.is_valid()
         assert "birth_date" in form.errors
         for i in self.common_test_data.keys():
@@ -65,7 +65,7 @@ class TestAddClientForm:
     def test_phone_invalid_too_long(self):
         test_data = self.common_test_data.copy()
         test_data["phone"] = "+9-98989898989989898989898"
-        form = AddClient(data=test_data)
+        form = AddCustomer(data=test_data)
         assert not form.is_valid()
         assert "phone" in form.errors
         for i in self.common_test_data.keys():
@@ -75,7 +75,7 @@ class TestAddClientForm:
     def test_phone_invalid_contains_letters(self):
         test_data = self.common_test_data.copy()
         test_data["phone"] = "+9-abcd"
-        form = AddClient(data=test_data)
+        form = AddCustomer(data=test_data)
         assert not form.is_valid()
         assert "phone" in form.errors
         for i in self.common_test_data.keys():

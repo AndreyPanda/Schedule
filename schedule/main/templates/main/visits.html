@@ -12,7 +12,7 @@
                 {% for i in row %}
                     {% if i|is_not_string and i|is_not_list %}
                         <td class="text-center">
-                            <a href="{% url 'client_data' %}?visit_datetime={{ i.get_visit_datetime }}&doctor={{ doct_slug }}">
+                            <a href="{% url 'customer_data' %}?visit_datetime={{ i.get_visit_datetime }}&doctor={{ doct_slug }}">
                                 <button type="button" class="btn btn-outline-primary">
                                     {{ i }}
                                 </button>
