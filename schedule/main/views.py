@@ -262,7 +262,8 @@ class FillInTheCustomerData(CreateView):
                     # Проверяем нет ли у этого клиента записей на это время (к другим врачам)
                     # Иначе - перенаправление на booking_is_failed
                     if not Visit.objects.filter(
-                        Q(customer_visiting=new_customer) & Q(visit_datetime=visit_datetime)
+                        Q(customer_visiting=new_customer)
+                        & Q(visit_datetime=visit_datetime)
                     ):
                         new_visit = Visit(
                             visit_datetime=visit_datetime,

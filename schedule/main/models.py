@@ -102,7 +102,9 @@ class Customer(models.Model):
 class Visit(models.Model):
     visit_datetime = models.DateTimeField()
     doctor_to_visit = models.ForeignKey(Doctor, on_delete=models.SET_NULL, null=True)
-    customer_visiting = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)
+    customer_visiting = models.ForeignKey(
+        Customer, on_delete=models.SET_NULL, null=True
+    )
 
     def __str__(self):
         return (
