@@ -1,3 +1,5 @@
+import datetime
+
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 
@@ -9,13 +11,6 @@ from django.core.exceptions import ValidationError
 def contains_only_cyrillic(text):
     pattern = re.compile("[А-Яа-яЁё-]+")
     return bool(pattern.fullmatch(text))
-
-
-def is_correct_birth_date(text):
-    pattern = re.compile(r"\d{4}-\d{2}-\d{2}")
-    if pattern.match(str(text)):
-        return True
-    return False
 
 
 def is_correct_phone_number(phone_number):
@@ -52,9 +47,13 @@ class AddCustomer(forms.ModelForm):
 
     def clean_birth_date(self):
         birth_date = self.cleaned_data["birth_date"]
-        if not is_correct_birth_date(birth_date):
+        if birth_date.year <= 1920:
             raise ValidationError(
-                'Пожалуйста, введите дату рождения в формате "ГГГГ-ММ-ДД"'
+                "Год рождения должен быть больше 1920"
+            )
+        elif birth_date > datetime.date.today():
+            raise ValidationError(
+                "Дата рождения должна быть раньше сегодняшнего дня"
             )
         return birth_date
 

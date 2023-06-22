@@ -253,9 +253,6 @@ class FillInTheCustomerData(CreateView):
                     ]
                 except:
                     dates_of_these_visits = []
-                print(
-                    f"---------------------------------------------dates_of_these_visits = {dates_of_these_visits}"
-                )
                 # Проверяем не записан ли этот клиент на эту дату к этому врачу
                 # Иначе - перенаправление на booking_is_failed
                 if not datetime.date(visit_datetime) in dates_of_these_visits:

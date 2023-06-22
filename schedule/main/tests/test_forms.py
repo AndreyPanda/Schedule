@@ -52,9 +52,19 @@ class TestAddCustomerForm:
             if i != "fathers_name":
                 assert i not in form.errors
 
-    def test_birth_date_invalid_format(self):
+    def test_birth_date_invalid_year_less_than_1920(self):
         test_data = self.common_test_data.copy()
-        test_data["birth_date"] = "12-12-1956"
+        test_data["birth_date"] = "12-12-1906"
+        form = AddCustomer(data=test_data)
+        assert not form.is_valid()
+        assert "birth_date" in form.errors
+        for i in self.common_test_data.keys():
+            if i != "birth_date":
+                assert i not in form.errors
+
+    def test_birth_date_invalid_greater_than_today(self):
+        test_data = self.common_test_data.copy()
+        test_data["birth_date"] = "12-12-2096"
         form = AddCustomer(data=test_data)
         assert not form.is_valid()
         assert "birth_date" in form.errors
