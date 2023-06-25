@@ -1,0 +1,14 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+    <h2 class="text-center">Авторизация</h2>
+    <form method="post" class="form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-outline-primary btn-sm" style="margin-right: 18px">
+            Войти
+        </button>
+    </form>
+
+{% endblock content %}

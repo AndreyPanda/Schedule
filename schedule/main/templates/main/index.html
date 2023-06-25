@@ -1,0 +1,44 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+    <h2 class="text-center"> Шаг 1 из 4: Выберите специализацию доктора</h2>
+
+    <!--Скрипт на языке JS для генерации таблицы динамической ширины в зависимости от кол-ва специализаций в БД -->
+    <script>
+        window.addEventListener('DOMContentLoaded', adjustTableWidth);
+
+        function adjustTableWidth() {
+            var table = document.querySelector('table');
+            var cellCount = table.getElementsByTagName('td').length;
+
+            if (cellCount === 1) {
+                table.style.width = '20%';
+            } else if (cellCount === 2) {
+                table.style.width = '40%';
+            } else if (cellCount === 3) {
+                table.style.width = '60%';
+            }
+        }
+    </script>
+
+
+    <table class="table table-my table-bordered">
+        <tbody>
+        {% for row in rows %}
+            <tr>
+                {% for specialization in row %}
+                    <td class="text-center">
+                        <a href="{% url 'doctors' %}?spec={{ specialization.slug }}">
+                            <button type="button" class="btn btn-outline-primary">
+                                {{ specialization.title }}
+                            </button>
+                        </a>
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock content %}

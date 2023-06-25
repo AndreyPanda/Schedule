@@ -1,0 +1,12 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<div class="text-center booking_ok">
+    Вы создали заявку на запись к доктору {{ doctor }} на {{ visit_datetime }}
+</div>
+<p class="text-center">
+    Запись будет подтверждена после звонка нашего администратора.
+</p>
+
+{% endblock content %}

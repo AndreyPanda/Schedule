@@ -1,0 +1,43 @@
+{% extends 'main/base.html' %}
+{% load user_tags %}
+
+{% block content %}
+
+    <h2 class="text-center">Список моих записей</h2> <br>
+
+    <table class="table table-bordered">
+        <tbody>
+        {% for row in my_visits_data %}
+            <tr>
+            {% if row|is_not_dict %}
+                {% for i in row %}
+                    <td>
+                        <div class="alert alert-my alert-secondary text-center" role="alert">
+                            <b>{{ i }}</b>
+                        </div>
+                    </td>
+                {% endfor %}
+            {% else %}
+                {% for k,v in row.items %}
+                    {% if v|is_not_string %}
+                        <td>
+                            <div class="alert alert-my alert-secondary text-center" role="alert">
+                                {{ v }}
+                            </div>
+                        </td>
+                    {% else %}
+                        <td class="text-center">
+                            <a href="{% url 'confirm_delete' %}?visit_datetime={{ row.ДатаВремя }}&doctor={{ row.Доктор.slug }}">
+                                <button type="button" class="btn btn-outline-danger">
+                                    {{ v }}
+                                </button>
+                            </a>
+                        </td>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock content %}

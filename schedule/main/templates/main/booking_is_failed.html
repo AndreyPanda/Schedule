@@ -1,0 +1,36 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<div class="text-center booking_nok">
+    Извините, не удалось создать запись к доктору {{ doctor }} на {{ visit_datetime }}
+</div>
+
+{% if reason == 'youalreadybookthisday' %}
+    <div class="text-center">
+        Вы уже записаны к этому доктору на эту дату.
+    </div>
+    <div class="text-center">
+        Вернитесь, пожалуйста, на главную страницу и попробуйте записаться на другую дату.
+    </div>
+{% endif %}
+
+{% if reason == 'doctorisbusy' %}
+    <div class="text-center">
+        Возможно, это время уже занял другой клиент, либо произошла ошибка в нашей системе
+    </div>
+    <div class="text-center">
+        Вернитесь, пожалуйста, на главную страницу и попробуйте записаться еще раз
+    </div>
+{% endif %}
+
+{% if reason == 'youhavevisittoanotherdoctor' %}
+    <div class="text-center">
+        Вы уже записаны к другому врачу на это время
+    </div>
+    <div class="text-center">
+        Вернитесь, пожалуйста, на главную страницу и попробуйте записаться на другое время
+    </div>
+{% endif %}
+
+{% endblock content %}
